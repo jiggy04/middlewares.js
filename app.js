@@ -1,3 +1,7 @@
+require("dotenv").config()
+
+
+
 const express = require('express');
 const app = express();
 app.use(express.json()); // Parse JSON bodies
@@ -12,9 +16,29 @@ app.get('/todos', (req, res) => {
   res.status(200).json(todos); // Send array as JSON
 });
 
+app.get('/todos/active', (req, res) => {
+  const active = todos.filter(t => !t.completed);
+  res.json(active); // Custom Read!
+});
+
+
+
+app.get('/todos/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const single_todo = todos.find(t => t.id ==id)
+  if(!single_todo){
+    res.json({error: "Item not Found"})
+  }
+  res.status(200).json(single_todo); // Send array as JSON
+});
+
+
+
 // POST New – Create
 app.post('/todos', (req, res) => {
   const newTodo = { id: todos.length + 1, ...req.body }; // Auto-ID
+  if(!req.body.task)
+    res.json({info: "Please specify your task"})
   todos.push(newTodo);
   res.status(201).json(newTodo); // Echo back
 });
@@ -46,5 +70,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Server error!' });
 });
 
-const PORT = 3002;
+const PORT = process.env.PORT;
+
 app.listen(PORT, () => console.log(`Server on port ${PORT}`));
