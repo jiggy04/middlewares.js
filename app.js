@@ -5,7 +5,7 @@ require("dotenv").config()
 const express = require('express');
 const app = express();
 const cors = require("cors")
-const logRequest = require('./logger')
+const logRequest = require('./middlewares/logger')
 const validateTodo = require('./middlewares/validator')
 const errorhandler = require('./middlewares/errorHandler')
 
